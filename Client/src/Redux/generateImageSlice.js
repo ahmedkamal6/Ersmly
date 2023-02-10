@@ -4,7 +4,7 @@ export const getImage = createAsyncThunk(
   "generateImages/getImage",
   async (args, thunkApi) => {
     try {
-      const res = await fetch("https://ersmly.onrender.com/api/v1/ersmly", {
+      const res = await fetch("http://127.0.0.1:8080/api/v1/ersmly", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export const submit = createAsyncThunk(
   async (args, thunkApi) => {
     try {
       const { name, prompt, photo } = args;
-      await fetch("https://ersmly.onrender.com/api/v1/post", {
+      await fetch("http://127.0.0.1:8080/api/v1/post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
