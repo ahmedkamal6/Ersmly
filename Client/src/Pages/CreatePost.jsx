@@ -3,67 +3,36 @@ import { useNavigate } from "react-router-dom";
 import { preview } from "../assets";
 import { getRandomPrompt } from "../utils";
 import { FormField, Loader } from "../Components";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  changeName,
+  changePrompt,
+  getImage,
+  submit,
+} from "../Redux/generateImageSlice";
 const CreatePost = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    name: "",
-    prompt: "",
-    photo: "",
-  });
-  const [generatingImg, setGeneratingImg] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const dispatch = useDispatch();
+  const { generatingImg, loading, name, prompt, photo } = useSelector(
+    (state) => state.generateImage
+  );
   const handleSurpriseMe = () => {
-    const randomPrompt = getRandomPrompt(form.prompt);
-    console.log("change prompt");
-    setForm({ ...form, prompt: randomPrompt });
+    const randomPrompt = getRandomPrompt(prompt);
+    dispatch(changePrompt(randomPrompt));
   };
   const generateImage = async () => {
-    if (form.prompt) {
-      try {
-        setGeneratingImg(true);
-        const res = await fetch("http://192.168.1.10:8080/api/v1/ersmly", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ prompt: form.prompt }),
-        });
-        const data = await res.json();
-        setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setGeneratingImg(false);
-      }
+    if (prompt) {
+      dispatch(getImage(prompt));
     } else {
       alert("press enter a prompt");
     }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.prompt && form.photo) {
-      setLoading(true);
-      try {
-        const response = await fetch("http://192.168.1.10:8080/api/v1/post", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(form),
-        });
-        await response.json();
-        navigate("/");
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    else{
-      alert('please enter a prompt')
+    if (prompt && photo) {
+      dispatch(submit({ name, prompt, photo })).then(() => navigate("/"));
+    } else {
+      alert("please enter a prompt");
     }
   };
   return (
@@ -82,16 +51,16 @@ const CreatePost = () => {
             type="text"
             name="name"
             placeholder="Eg. Max Smith"
-            value={form.name}
-            handleChange={handleChange}
+            value={name}
+            handleChange={(e) => dispatch(changeName(e.target.value))}
           />
           <FormField
             label="Prompt"
             type="text"
             name="prompt"
             placeholder="A plush toy robot sitting against a yellow wall"
-            value={form.prompt}
-            handleChange={handleChange}
+            value={prompt}
+            handleChange={(e) => dispatch(changePrompt(e.target.value))}
             isSurpriseMe
             handleSurpriseMe={handleSurpriseMe}
           />
@@ -99,10 +68,10 @@ const CreatePost = () => {
             className="relative bg-gray-50 border broder-gray-300 text-gray-900
           text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center"
           >
-            {form.photo ? (
+            {photo ? (
               <img
-                src={form.photo}
-                alt={form.prompt}
+                src={photo}
+                alt={prompt}
                 className="w-full h-full object-contain"
               />
             ) : (
@@ -123,7 +92,8 @@ const CreatePost = () => {
           <button
             type="button"
             onClick={generateImage}
-            className="text-white bg-green-700 font-medium rounded-md text-sm w-full  px-5 py-2.5 text-center"
+            className="text-white bg-green-700 font-medium rounded-md text-sm w-full  px-5 py-2.5 text-center disabled:opacity-75"
+            disabled={generatingImg || loading}
           >
             {generatingImg ? "Generating..." : "Generate"}
           </button>
@@ -135,7 +105,7 @@ const CreatePost = () => {
           </p>
           <button
             type="submit"
-            className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full px-5 py-2.5 text-center"
+            className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full px-5 py-2.5 text-center disabled:opacity-75"
             disabled={loading}
           >
             {loading ? "Sharing" : "Share with the community"}

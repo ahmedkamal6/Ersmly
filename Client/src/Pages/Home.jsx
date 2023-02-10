@@ -1,56 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Card, FormField, Loader } from "../Components";
-
-const RenderCards = (props) => {
-  if (props.data?.length > 0)
-    return props.data.map((post) => <Card key={post._id} {...post} />);
-  return (
-    <h2 className="mt-5 font-bold text-[#6469ff] text-xl uppercase">
-      {props.title}
-    </h2>
-  );
-};
+import { useDispatch,useSelector } from "react-redux";
+import { getAllPosts,handleSearch } from "../Redux/postsSlice";
+import { useRef } from "react";
+import RenderCards from "../Components/RenderCards";
 const Home = () => {
-  const [loading, setLoading] = useState(false);
-  const [allPosts, setAllPosts] = useState(null);
-  const [searchText, setsearchText] = useState("");
-  const [searchResult, setSearchResult] = useState(null);
-  const [searchTimeout, setSearchTimeout] = useState(null);
+  const dispatch = useDispatch()
+  const {allPosts,searchText,searchResult,loading} = useSelector(state=>state.post)
   useEffect(() => {
-    const getAllPosts = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch("http://192.168.1.10:8080/api/v1/post", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.ok) {
-          const result = await response.json();
-          setAllPosts(result.data.reverse());
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getAllPosts();
-  }, []);
-  const handleSearchChange = (e) => {
-    setsearchText(e.target.value);
-    setSearchTimeout(
-      setTimeout(() => {
-        const searchResults = allPosts.filter((item) => {
-          return item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.prompt.toLowerCase().includes(searchText.toLowerCase());
-        });
-        setSearchResult(searchResults);
-        console.log(searchResult)
-      }, 500)
-    );
-  };
+    dispatch(getAllPosts())
+  }, [dispatch]);
+
   return (
     <section className="max-w-7xl mx-auto ">
       <div>
@@ -69,7 +29,7 @@ const Home = () => {
           name="text"
           placeholder="Search posts"
           value={searchText}
-          handleChange={handleSearchChange}
+          handleChange={(e)=>dispatch(handleSearch(e.target.value))}
         />
       </div>
       <div className="mt-10">
