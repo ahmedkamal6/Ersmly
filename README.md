@@ -4,4 +4,4 @@ user auth and delete button will be implemented later
 
 DEMO :https://ersmly.netlify.app/ just refresh page if it didn't work first time i guess it's netlify problem but not sure
 
-Edit: authentication and delete are done, auto uses name for posting  
+Edit: authentication and delete are done, auto uses name for posting note that all plans for db cloudinary are free so it might be on the slow side 
