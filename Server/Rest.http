@@ -1,0 +1,39 @@
+GET  http://localhost:8080/
+###
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+    "name":"ahmed",
+    "email":"asdsad",
+    "password":"asdsad"
+}
+
+###
+POST  http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+      "name":"ahmed",
+    "email":"asdsad",
+    "password":"asdsad"
+}
+
+###
+POST http://localhost:8080/api/v1/post
+Content-Type: application/json
+
+{
+    "userid":"63ea13ebae6998e1c109208e",   
+    "name":"ahmed",
+    "photo":"asdsad",
+    "prompt":"asdsa3d",
+    "prompt2":"sadsad"
+}
+###
+DELETE  http://localhost:8080/api/v1/post
+Content-Type: application/json
+
+{
+    "id":"63ebc07eccb4fee0e68fa935"
+}

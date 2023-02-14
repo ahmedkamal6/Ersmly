@@ -1,7 +1,6 @@
 const express = require("express");
 const env = require("dotenv");
 const cloudinary = require("cloudinary").v2;
-const OpenAi = require("openai");
 const Post = require("../mongoDB/models/post");
 
 env.config();
@@ -24,16 +23,28 @@ router.route("/").get(async (req, res) => {
 //create a post
 router.route("/").post(async (req, res) => {
   try {
-    const { name, prompt, photo } = req.body;
+    const { name, prompt, photo, userid } = req.body;
     const photoURL = await cloudinary.uploader.upload(photo);
     const newPost = await Post.create({
       name,
       prompt,
       photo: photoURL.url,
+      userid,
     });
     res.status(201).json({ success: true, data: newPost });
   } catch (error) {
     res.status(500).json({ success: false, message: error });
   }
 });
+router.route("/").delete(async (req, res) => {
+  try {
+    const id = req.body.id;
+    Post.findByIdAndDelete(id).then((result) => {
+      res.status(200).send()
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;
