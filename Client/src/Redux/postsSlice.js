@@ -3,7 +3,7 @@ export const getAllPosts = createAsyncThunk(
   "posts/getAllPosts",
   async (args, thunkApi) => {
     try {
-      const response = await fetch("http://127.0.0.1:8080/api/v1/post", {
+      const response = await fetch("http://localhost:8080/api/v1/post", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -18,12 +18,30 @@ export const getAllPosts = createAsyncThunk(
     }
   }
 );
+
+export const deletePost = createAsyncThunk(
+  "posts/deletePost",
+  async (args, thunkApi) => {
+    try {
+      const id = args;
+      await fetch("http://localhost:8080/api/v1/post", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({id}),
+      });
+    } catch (error) {
+      console.log(error)
+    }
+  }
+);
 const initialState = {
   loading: false,
   allPosts: null,
   searchText: "",
   searchResult: null,
-  error:null
+  error: null,
 };
 const postsSlice = createSlice({
   name: "posts",

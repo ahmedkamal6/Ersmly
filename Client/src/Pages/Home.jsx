@@ -10,7 +10,6 @@ const Home = () => {
   useEffect(() => {
     dispatch(getAllPosts())
   }, [dispatch]);
-
   return (
     <section className="max-w-7xl mx-auto ">
       <div>

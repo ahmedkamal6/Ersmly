@@ -10,12 +10,14 @@ import {
   getImage,
   submit,
 } from "../Redux/generateImageSlice";
+import { useEffect } from "react";
 const CreatePost = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { generatingImg, loading, name, prompt, photo } = useSelector(
+  const { generatingImg, loading, prompt, photo } = useSelector(
     (state) => state.generateImage
   );
+  const {name,userid} = useSelector((state) => state.login);
   const handleSurpriseMe = () => {
     const randomPrompt = getRandomPrompt(prompt);
     dispatch(changePrompt(randomPrompt));
@@ -30,11 +32,15 @@ const CreatePost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (prompt && photo) {
-      dispatch(submit({ name, prompt, photo })).then(() => navigate("/"));
+      dispatch(submit({ name, prompt, photo, userid })).then(() => navigate("/"));
     } else {
       alert("please enter a prompt");
     }
   };
+  useEffect(()=>{
+    if(!JSON.parse(localStorage.getItem("loggedUserName")))
+      navigate('/login')
+  },[])
   return (
     <section className="max-w-7xl mx-auto">
       <div>
@@ -46,14 +52,6 @@ const CreatePost = () => {
       </div>
       <form className="mt-16 max-w-3xl" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-5">
-          <FormField
-            label="Your name"
-            type="text"
-            name="name"
-            placeholder="Eg. Max Smith"
-            value={name}
-            handleChange={(e) => dispatch(changeName(e.target.value))}
-          />
           <FormField
             label="Prompt"
             type="text"

@@ -4,7 +4,7 @@ export const getImage = createAsyncThunk(
   "generateImages/getImage",
   async (args, thunkApi) => {
     try {
-      const res = await fetch("http://127.0.0.1:8080/api/v1/ersmly", {
+      const res = await fetch("http://localhost:8080/api/v1/ersmly", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -22,13 +22,14 @@ export const submit = createAsyncThunk(
   "generateImages/submit",
   async (args, thunkApi) => {
     try {
-      const { name, prompt, photo } = args;
-      await fetch("http://127.0.0.1:8080/api/v1/post", {
+      const { name, prompt, photo, userid } = args;
+      console.log(args);
+      await fetch("http://localhost:8080/api/v1/post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, prompt, photo }),
+        body: JSON.stringify({ name, prompt, photo, userid }),
       });
     } catch (error) {
       return thunkApi.rejectWithValue(error.message);
