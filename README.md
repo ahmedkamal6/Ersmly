@@ -3,3 +3,5 @@ i used onrender to host my node server and netlify to host my react app here is 
 user auth and delete button will be implemented later
 
 DEMO :https://ersmly.netlify.app/
+
+Edit: authentication and delete are done, auto uses name for posting  
